@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrical Quotation Pro - Blue</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --neon-blue: #00d4ff;
+            --dark-bg: #050a14;
+            --card-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 110px;
+        }
+
+        h2 { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); margin-top: 15px; font-size: 22px; }
+
+        .box {
+            width: 95%;
+            max-width: 500px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        label { display: block; color: var(--neon-blue); font-size: 11px; margin-top: 8px; font-weight: bold; text-transform: uppercase; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0 10px 0;
+            background: #000;
+            border: 1px solid #1e293b;
+            color: #fff;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        input:focus { border-color: var(--neon-blue); outline: none; }
+
+        .btn-add {
+            width: 100%; background: var(--neon-blue); color: black; border: none;
+            padding: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px;
+        }
+
+        .btn-view {
+            background: transparent; color: var(--neon-blue); border: 1px solid var(--neon-blue);
+            padding: 12px; margin-top: 10px; border-radius: 8px; width: 100%; font-weight: bold;
+        }
+
+        .btn-save {
+            position: fixed; bottom: 15px; width: 90%; max-width: 400px;
+            background: #fff; color: #000; padding: 16px; border-radius: 50px;
+            font-weight: bold; border: 3px solid var(--neon-blue); font-size: 16px;
+            z-index: 100; box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+        }
+
+        /* Modal */
+        #viewModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 200; padding: 20px; box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: var(--card-bg); padding: 20px; border-radius: 12px;
+            max-height: 85vh; overflow-y: auto; border: 1px solid var(--neon-blue);
+        }
+
+        .list-row {
+            display: flex; justify-content: space-between; padding: 10px 0;
+            border-bottom: 1px solid #1e293b; font-size: 13px; align-items: center;
+        }
+
+        .delete-btn { color: #ff5555; font-size: 10px; border: 1px solid #ff5555; padding: 4px 8px; border-radius: 4px; }
+
+        /* PDF Layout */
+        #quotation-template {
+            display: none; padding: 30px; background: white; color: black; font-size: 12px;
+        }
+
+        .pdf-header { text-align: center; border-bottom: 2px solid black; margin-bottom: 15px; padding-bottom: 10px; }
+        .pdf-table { width: 100%; border-collapse: collapse; }
+        .pdf-table th { background: #f2f2f2; border: 1px solid #000; padding: 8px; font-size: 11px; }
+        .pdf-table td { border: 1px solid #000; padding: 8px; font-size: 11px; }
+    </style>
+</head>
+<body>
+
+    <h2>⚡ BLUE QUOTER</h2>
+
+    <div class="box">
+        <label>Customer Details</label>
+        <input type="text" id="custName" placeholder="Customer Name">
+        <input type="text" id="custPhone" placeholder="Phone Number">
+        
+        <label>Select or Type Item</label>
+        <input type="text" id="itemName" placeholder="Search Item..." list="itemList">
+        <datalist id="itemList">
+            <option value="1.44 Wire ACL 1.13 1mm"><option value="1.44 Wire Orange 1.13 1mm">
+            <option value="7/0.53 ACL Wire 1.5mm Single"><option value="7/0.53 Twin ACL 1.5mm">
+            <option value="7/0.67 ACL Wire 2.5mm Single"><option value="7/0.67 Orange Wire 2.5mm Single –m">
+            <option value="7/0.67 ACL Twin 2.5mm"><option value="7/0.85 Wire 4mm Single">
+            <option value="7/1.04 Main Wire 6mm Single"><option value="7/1.04 Main Orange Twin">
+            <option value="10mm Eth Wire ACL"><option value="16/0.2 0.5 Wire 2 core White">
+            <option value="Per Meter TT Wire 16/0.20 ACL Rs. 8mm"><option value="30/0.25 3 Core 1.5mm x 3 Black">
+            <option value="3M Cat 06 Cable Box"><option value="Snider Cat 06 Cable">
+            <option value="2 Core Flexible (White)"><option value="3 Core Flexible"><option value="3 Core Hose Wire">
+            <option value="2 Core Flat Wire"><option value="3 Core"><option value="Armoured Cable">
+            <option value="Earth Wire"><option value="Main Wire DB"><option value="MCB">
+            <option value="Main Switch"><option value="RCB Trip Switch"><option value="Modular Indicator">
+            <option value="Pilot Light / Three Phase"><option value="DB Light / Neon Indicator">
+            <option value="Neutral Link"><option value="Earth Link"><option value="Busbar">
+            <option value="Combo Busbar"><option value="Insulated Busbar"><option value="SPD (Surge Protection Device)">
+            <option value="08 Way Sunk type DB Box"><option value="12 Way Sunk type DB Box">
+            <option value="18 Way Sunk type DB Box"><option value="24 Way Sunk type DB Box">
+            <option value="Pin lugs"><option value="Fork / U-type Lugs"><option value="Ring Lugs">
+            <option value="Bootlace Ferrules"><option value="Switch 1 gang / one way">
+            <option value="Switch 2 gang / one way"><option value="Switch 3 gang / one way">
+            <option value="Switch 4 gang / one way"><option value="Switch 1 gang / two way">
+            <option value="Switch 2 gang / two way"><option value="Bell Push">
+            <option value="Motor Switch and Indicator"><option value="Light Switch and Dimmer">
+            <option value="Fan Regular / Dimmer"><option value="13A Socket"><option value="16A Socket">
+            <option value="20A Socket"><option value="TV Socket"><option value="TV Plug (Male Connector)">
+            <option value="RJ45 Socket"><option value="Video Intercom Monitor"><option value="Speaker Socket">
+            <option value="USB Charging Socket"><option value="HDMI Wall Socket"><option value="Batten Holder">
+            <option value="Angle Holder"><option value="Pendant Holder Standed"><option value="Bracket Holder">
+            <option value="Ceiling Rose"><option value="Segmented Diamond Blade">
+            <option value="Conduit Pipe"><option value="Conduit Clip"><option value="Conduit Socket">
+            <option value="Conduit T socket"><option value="Flexible Hose"><option value="Junction Box One way">
+            <option value="Junction Box two way"><option value="Junction Box three way"><option value="Junction Box Four way">
+            <option value="Sunk Box 01gang"><option value="Sunk Box 02 gang"><option value="Sunk Box 03 gang">
+            <option value="Sunk Box 04 gang"><option value="Concrete Nails"><option value="Rawl plug">
+            <option value="Screws"><option value="Cable Tie"><option value="Insulation Tape">
+            <option value="Wiring Spring"><option value="Insulated Cutter"><option value="Side Cutter">
+            <option value="Screwdriver Set"><option value="Tester">
+        </datalist>
+
+        <input type="number" id="itemQty" placeholder="Quantity">
+        <button class="btn-add" onclick="addItem()">ADD ITEM</button>
+        <button class="btn-view" onclick="toggleView(true)">VIEW CURRENT LIST</button>
+        <button class="btn-view" style="border-color:gray; color:gray;" onclick="viewLast()">VIEW LAST SAVED</button>
+    </div>
+
+    <button class="btn-save" onclick="savePDF()">SAVE & OPEN PDF</button>
+
+    <div id="viewModal">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="color: var(--neon-blue); margin-top:0;">Items</h3>
+            <div id="displayItems"></div>
+            <button class="btn-view" onclick="toggleView(false)">CLOSE</button>
+        </div>
+    </div>
+
+    <div id="quotation-template">
+        <div class="pdf-header">
+            <h2 style="color:black; margin:0;">ELECTRICAL QUOTATION</h2>
+        </div>
+        <table style="width:100%; margin-bottom:10px; font-size:11px;">
+            <tr>
+                <td><strong>Customer:</strong> <span id="pName"></span></td>
+                <td style="text-align:right"><strong>Date:</strong> <span id="pDate"></span></td>
+            </tr>
+            <tr>
+                <td><strong>Phone:</strong> <span id="pPhone"></span></td>
+                <td></td>
+            </tr>
+        </table>
+        <table class="pdf-table">
+            <thead>
+                <tr>
+                    <th style="width:8%">No</th>
+                    <th>Item Description</th>
+                    <th style="width:15%">Qty</th>
+                </tr>
+            </thead>
+            <tbody id="pBody"></tbody>
+        </table>
+        <div style="margin-top:50px; border-top:1px solid #000; width:150px; text-align:center; font-size:10px;">
+            Authorized Signature
+        </div>
+    </div>
+
+    <script>
+        let currentList = [];
+
+        function addItem() {
+            const name = document.getElementById('itemName').value;
+            const qty = document.getElementById('itemQty').value;
+            if(name && qty) {
+                currentList.push({name, qty});
+                document.getElementById('itemName').value = "";
+                document.getElementById('itemQty').value = "";
+                alert("Item added!");
+            }
+        }
+
+        function toggleView(show) {
+            const d = document.getElementById('displayItems');
+            document.getElementById('modalTitle').innerText = "Current List";
+            if(show) {
+                d.innerHTML = currentList.map((item, i) => `
+                    <div class="list-row">
+                        <span>${i+1}. ${item.name} <b>(${item.qty})</b></span>
+                        <span class="delete-btn" onclick="remove(${i})">DEL</span>
+                    </div>
+                `).join('') || "No items.";
+                document.getElementById('viewModal').style.display = 'block';
+            } else { document.getElementById('viewModal').style.display = 'none'; }
+        }
+
+        function remove(i) { currentList.splice(i, 1); toggleView(true); }
+
+        function viewLast() {
+            const last = JSON.parse(localStorage.getItem('lastQuotation'));
+            if(!last) return alert("No history found.");
+            const d = document.getElementById('displayItems');
+            document.getElementById('modalTitle').innerText = "Last Saved: " + last.customer;
+            d.innerHTML = last.items.map((item, i) => `
+                <div class="list-row">
+                    <span>${i+1}. ${item.name} <b>(${item.qty})</b></span>
+                </div>
+            `).join('');
+            document.getElementById('viewModal').style.display = 'block';
+        }
+
+        async function savePDF() {
+            if(currentList.length === 0) return alert("Add items!");
+
+            const cName = document.getElementById('custName').value || "Customer";
+            const cPhone = document.getElementById('custPhone').value || "N/A";
+            const date = new Date().toLocaleDateString();
+
+            // Store in Last Saved
+            localStorage.setItem('lastQuotation', JSON.stringify({
+                customer: cName,
+                items: currentList
+            }));
+
+            document.getElementById('pName').innerText = cName;
+            document.getElementById('pPhone').innerText = cPhone;
+            document.getElementById('pDate').innerText = date;
+
+            document.getElementById('pBody').innerHTML = currentList.map((item, i) => `
+                <tr>
+                    <td style="text-align:center">${i+1}</td>
+                    <td>${item.name}</td>
+                    <td style="text-align:center">${item.qty}</td>
+                </tr>
+            `).join('');
+
+            const el = document.getElementById('quotation-template');
+            el.style.display = 'block';
+
+            const opt = {
+                margin: 0.5,
+                filename: `Quotation_${cName}.pdf`,
+                html2canvas: { scale: 3 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            const worker = html2pdf().set(opt).from(el);
+            await worker.save();
+            const pdfBlob = await worker.output('bloburl');
+            window.open(pdfBlob, '_blank');
+            el.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
